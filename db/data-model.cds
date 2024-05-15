@@ -8,7 +8,6 @@ using {
 namespace my.bookshop;
 
 type stringX     : String(32);
-
 type PhoneNumber : String(30) @assert.format: '^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$';
 type Email       : String(255) @assert.format: '^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$';
 
@@ -25,22 +24,17 @@ type AmountT     : Decimal(15, 2) @(
   sap.unit                     : 'CURRENCY_CODE'
 );
 
-// aspect Amount {
-//   CURRENCY_CODE : String(4);
-//   GROSS_AMOUNT  : AmountT;
-//   NET_AMOUNT    : AmountT;
-//   TAX_AMOUNT    : AmountT;
-// }
 
 entity Books : managed {
-  key ID       : Integer; // Primary Key
-      title    : localized String(111)  @mandatory;
-      descr    : localized String(1111);
-      author_ID   : String;
-      stock    : Integer;
-      price    : Decimal;
+  key ID            : Integer; // Primary Key
+      title         : localized String(111) @mandatory;
+      descr         : localized String(1111);
+      author_ID     : String;
+      author_name   : Association to Authors;
+      stock         : Integer;
+      price         : Decimal;
       currency_code : String;
-      genre_ID    : Integer;
+      genre_ID      : Integer;
 }
 
 entity Authors : managed {
@@ -50,11 +44,13 @@ entity Authors : managed {
       placeOfBirth : String;
       dateOfDeath  : Date;
       placeOfDeath : String;
+      books        : Association to many Books on books.author_ID = $self.ID;
+      
 }
 
 entity Banker {
-  key  Name : String;
-       Number_of_Books : Integer;
+  key Name            : String;
+      Number_of_Books : Integer;
 }
 
 
@@ -77,9 +73,16 @@ entity Customers : cuid {
 }
 
 entity Loans {
-    Serial_ID : String;
-    Type : String;
-    Banker : String;
-    CustomerName : String;
-    Book_Name : String;
+  Serial_ID    : String;
+  Type         : String;
+  Banker       : String;
+  CustomerName : String;
+  Book_Name    : String;
+  books      : Association to Books on books.title = $self.Book_Name;
 }
+
+// @cds.persistence.exists
+// entity CV_BOOKS {
+//   key ID : String(111);
+//   Text : String(111);
+// }
