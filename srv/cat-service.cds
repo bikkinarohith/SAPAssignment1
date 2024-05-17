@@ -9,6 +9,6 @@ service CatalogService {
     entity Customers                          as projection on my.Customers;
     // entity DropDownListForBooks                as projection on my.CV_BOOKS;
 
-
+    action getBooksByAuthor(authorName: String) returns array of String;
 }
 
