@@ -1,0 +1,5 @@
+VIEW "CV_BOOKS_N" AS
+SELECT DISTINCT Id as "ID", title as "TITLE"
+FROM MY_BOOKSHOP_BOOKS
+
+-- Analysing the view

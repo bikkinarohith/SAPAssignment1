@@ -27,3 +27,27 @@ module.exports = cds.service.impl(async function() {
         return books;
     });
 });
+
+//===============================================================================================
+//Perform CREATE operation
+
+const { v4: uuidv4 } = require('uuid');
+
+class CatalogService extends cds.ApplicationService {
+    init() {
+        const { Banker } = cds.entities('my.bookshop');
+
+        // Create Book
+        this.on('CREATE', Banker, async req => {
+            const newBanker = req.data;
+            newBanker.ID = uuidv4(); // Generate a UUID for the new book
+            await INSERT.into(Banker).entries(newBanker);
+            return newBanker; // Return the newly created book
+        });
+
+        // Delegate requests to the underlying generic service
+        return super.init();
+    }
+}
+
+module.exports = CatalogService;
